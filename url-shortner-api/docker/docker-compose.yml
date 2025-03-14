@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # MySQL service
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: urlshortener
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    restart: always
+
+  # Redis service
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    restart: always
+
+  # URL Shortener Backend (API)
+  # backend:
+  #   build:
+  #     context: ./backend  # Assuming the backend service is in the 'backend' directory
+  #   container_name: urlshortener_backend
+  #   environment:
+  #     - DB_CONNECTION=mysql
+  #     - DB_HOST=mysql
+  #     - DB_USER=user
+  #     - DB_PASSWORD=userpassword
+  #     - DB_NAME=urlshortener
+  #     - REDIS_HOST=redis
+  #   depends_on:
+  #     - mysql
+  #     - redis
+  #   ports:
+  #     - "8080:8080"  # Assuming the backend runs on port 8080
+  #   networks:
+  #     - app_network
+  #   restart: always
+
+  # # URL Shortener Client (Frontend)
+  # client:
+  #   build:
+  #     context: ./client  # Assuming the client service is in the 'client' directory
+  #   container_name: urlshortener_client
+  #   environment:
+  #     - BACKEND_URL=http://backend:8080  # Assuming the frontend communicates with backend via this URL
+  #   ports:
+  #     - "3000:3000"  # Assuming the frontend runs on port 3000
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - app_network
+  #   restart: always
+
+# Define named volumes to persist data
+volumes:
+  mysql_data:
+
+# Define networks
+networks:
+  app_network:
+    driver: bridge
