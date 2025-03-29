@@ -31,12 +31,12 @@ shortenButton.addEventListener('click', async () => {
 copyButton.addEventListener('click', () => {
     const shortenedText = shortUrl.textContent;
     if (!shortenedText) {
-        return; // No shortened URL to copy
+        return;
     }
 
     navigator.clipboard.writeText(shortenedText)
         .then(() => {
-            alert('Link copied to clipboard!');
+            copyButton.innerText = "Copied!";
         })
         .catch(err => {
             console.error('Failed to copy link:', err);

@@ -19,7 +19,8 @@ namespace UrlShortner.Controllers
         [HttpGet("shorten")]
         public async Task<IActionResult> ShortenAsync([FromQuery] string url)
         {
-            if (url is null) return NotFound();
+            if (url is null) return BadRequest();
+            
             UrlShortenerHelper helper = new UrlShortenerHelper(dapperHelper, configuration);
             string shortenUrl = await helper.GenerateShortenUrl(url);
             return Ok(shortenUrl);

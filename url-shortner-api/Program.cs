@@ -1,12 +1,31 @@
+using DotNetEnv;
 using UrlShortner.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+Env.Load();
+
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+
+if (Environment.GetEnvironmentVariable("ALLOWED_ORIGINS") == null)
+{
+    throw new NullReferenceException("No ALLOWED ROUTES found");
+}
+else 
+{
+    string[] allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")!.Split(',');
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecific", policy =>
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    });
+}
 
 if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("MySQLConnection")))
 {
@@ -18,11 +37,7 @@ if (!string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("MySQLC
 }
 
 var app = builder.Build();
-app.UseCors(builder => builder
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowAnyOrigin()
-);
+app.UseCors("AllowSpecific");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

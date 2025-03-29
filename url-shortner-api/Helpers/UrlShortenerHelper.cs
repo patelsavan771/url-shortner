@@ -28,10 +28,8 @@ public class UrlShortenerHelper
         // save code to db
         await SaveToDb(new ShortenUrl
         {
-            id = Guid.NewGuid(),
             code = code,
             url = url,
-            shortUrl = shortenUrl,
             createdOn = DateTime.Now
         });
 
@@ -54,8 +52,7 @@ public class UrlShortenerHelper
 
     private async Task SaveToDb(ShortenUrl shortenUrl)
     {
-        // TODO: add int id instead of guid
-        string query = "INSERT INTO url_master (id, code, url, shortUrl, createdOn) VALUES (@id, @code, @url, @shortUrl, @createdOn);";
+        string query = "INSERT INTO url_master (code, url, createdOn) VALUES (@code, @url, @createdOn);";
         await dapperHelper.ExecuteNonQueryAsync(query, shortenUrl);
     }
 }
