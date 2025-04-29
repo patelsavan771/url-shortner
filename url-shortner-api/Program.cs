@@ -5,15 +5,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
 
+builder.WebHost.UseUrls("http://0.0.0.0:5149");
+
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-builder.Services.AddOpenApi();
+// builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
 if (Environment.GetEnvironmentVariable("ALLOWED_ORIGINS") == null)
 {
     throw new NullReferenceException("No ALLOWED ROUTES found");
 }
-else 
+else
 {
     string[] allowedOrigins = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS")!.Split(',');
     builder.Services.AddCors(options =>
@@ -42,7 +44,7 @@ app.UseCors("AllowSpecific");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    // app.MapOpenApi();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "Swagger"));
 }
 

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: urlshortener
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    restart: always
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+    restart: always
+
+  frontend:
+    build:
+      context: ./url-shortner-fe  # Path to your frontend directory
+    container_name: frontend
+    ports:
+      - "8081:80"
+    networks:
+      - app_network
+    restart: always
+    # volumes:
+    #   - ./frontend:/usr/share/nginx/html  # Mount the frontend files into the container
+    depends_on:
+      - backend  # Ensure frontend starts after the backend
+
+  backend:
+    build:
+      context: ./url-shortner-api  # Path to your backend directory
+    container_name: backend
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: urlshortener
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+      ASPNETCORE_ENVIRONMENT: Production
+      ALLOWED_ORIGINS: "http://127.0.0.1:8081,http://127.0.0.1:5500,https://savan.site,http://127.0.0.1:8081,http://localhost:8081/"
+      USER_FACING_SERVER: "http://localhost:5149"
+    ports:
+      - "5149:5149"
+    networks:
+      - app_network
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+    # volumes:
+    #   - ./backend:/app  # Mount your backend files into the container
+
+volumes:
+  mysql_data:
+  frontend_data:
+  backend_data:
+
+networks:
+  app_network:
+    driver: bridge

@@ -1,6 +1,6 @@
-create schema `url-shortener` ;
+create schema `urlshortener` ;
 
-CREATE TABLE `url_shortener`.`url_master` (
+CREATE TABLE `urlshortener`.`url_master` (
   `id` int NOT NULL AUTO_INCREMENT,
   `code` VARCHAR(6) NULL,
   `url` VARCHAR(125) NULL,
