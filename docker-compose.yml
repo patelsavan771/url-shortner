@@ -31,7 +31,7 @@ services:
       context: ./url-shortner-fe  # Path to your frontend directory
     container_name: frontend
     ports:
-      - "8081:80"
+      - "80:80"
     networks:
       - app_network
     restart: always
@@ -50,7 +50,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: userpassword
       ASPNETCORE_ENVIRONMENT: Production
-      ALLOWED_ORIGINS: "http://127.0.0.1:8081,http://127.0.0.1:5500,https://savan.site,http://127.0.0.1:8081,http://localhost:8081/"
+      ALLOWED_ORIGINS: "http://127.0.0.1,http://127.0.0.1:80,http://127.0.0.1:5500,https://savan.site,http://127.0.0.1:80,http://localhost:80/"
       USER_FACING_SERVER: "http://localhost:5149"
     ports:
       - "5149:5149"

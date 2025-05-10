@@ -3,6 +3,7 @@ const shortenButton = document.getElementById('shortenButton');
 const shortenedUrl = document.getElementById('shortenedUrl');
 const shortUrl = document.getElementById('shortUrl');
 const copyButton = document.getElementById('copyButton');
+const hostname = "127.0.0.1";
 
 shortenButton.addEventListener('click', async () => {
     const longUrl = urlInput.value;
@@ -12,8 +13,9 @@ shortenButton.addEventListener('click', async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:5149/shorten?url=${longUrl}`);
-        const data = await response.text(); // Read the response as text
+        const response = await fetch(`http://${hostname}:5149/shorten?url=${longUrl}`);
+        let data = await response.text(); // Read the response as text
+        data = data.replace("localhost", hostname);
         console.log(data);
 
         if (response.ok) {
